@@ -1003,6 +1003,11 @@ UsbEnumeratePort (
     if ((hub_port_warm_reset_required (Port, portstatus)) &&  (!(portstatus & USB_PORT_STAT_C_CONNECTION))) {
       while (retry_num < RESET_NUM) {
         Status = UsbHubWarmResetPort (HubIf, Port);
+        if (EFI_ERROR (Status)) {
+          retry_num = RESET_NUM;
+          break;
+        }
+
         Status = HubApi->GetPortStatus (HubIf, Port, &PortState);
 
         if (EFI_ERROR (Status)) {
